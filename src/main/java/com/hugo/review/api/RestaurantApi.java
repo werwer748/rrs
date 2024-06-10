@@ -1,10 +1,16 @@
 package com.hugo.review.api;
 
 import com.hugo.review.api.request.CreateAndEditRestaurantRequest;
+import com.hugo.review.model.RestaurantEntity;
+import com.hugo.review.service.RestaurantService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 public class RestaurantApi {
+
+    private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
     public String getRestaurants() {
@@ -19,26 +25,24 @@ public class RestaurantApi {
     }
 
     @PostMapping("/restaurant")
-    public String createRestaurant(
+    public void createRestaurant(
             @RequestBody CreateAndEditRestaurantRequest request
             ) {
-        return "This is a createRestaurant, name: " + request.getName() + ", address: " + request.getAddress()
-//                + "menu[0].name: " + (request.getMenus().isEmpty() || ? "없음" : request.getMenus().get(0).getName());
-                + "menu[0].name: " + (request.getMenus());
+        restaurantService.createRestaurant(request);
     }
 
     @PutMapping("/restaurant/{restaurantId}")
-    public String editRestaurant(
+    public void editRestaurant(
             @PathVariable Long restaurantId,
             @RequestBody CreateAndEditRestaurantRequest request
     ) {
-        return "This is a editRestaurant:: " + restaurantId + ", name: " + request.getName() + ", address: " + request.getAddress();
+        restaurantService.editRestaurant(restaurantId, request);
     }
 
     @DeleteMapping("/restaurant/{restaurantId}")
-    public String deleteRestaurant(
+    public void deleteRestaurant(
             @PathVariable Long restaurantId
     ) {
-        return "This is a deleteRestaurant:: " + restaurantId;
+        restaurantService.deleteRestaurant(restaurantId);
     }
 }
