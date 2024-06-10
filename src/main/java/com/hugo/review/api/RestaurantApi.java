@@ -1,10 +1,15 @@
 package com.hugo.review.api;
 
 import com.hugo.review.api.request.CreateAndEditRestaurantRequest;
+import com.hugo.review.api.response.RestaurantDetailView;
+import com.hugo.review.api.response.RestaurantView;
 import com.hugo.review.model.RestaurantEntity;
 import com.hugo.review.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,15 +18,15 @@ public class RestaurantApi {
     private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public String getRestaurants() {
-        return "This is a getRestaurants";
+    public List<RestaurantView> getRestaurants() {
+        return restaurantService.getAllRestaurants();
     }
 
     @GetMapping("/restaurant/{restaurantId}")
-    public String getRestaurantById(
+    public RestaurantDetailView getRestaurantById(
             @PathVariable("restaurantId") Long restaurantId
     ) {
-        return "This is a getRestaurantById:: " + restaurantId;
+        return restaurantService.getRestaurantDetail(restaurantId);
     }
 
     @PostMapping("/restaurant")

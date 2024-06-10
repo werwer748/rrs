@@ -1,6 +1,8 @@
 package com.hugo.review.service;
 
 import com.hugo.review.api.request.CreateAndEditRestaurantRequest;
+import com.hugo.review.api.response.RestaurantDetailView;
+import com.hugo.review.api.response.RestaurantView;
 import com.hugo.review.model.MenuEntity;
 import com.hugo.review.model.RestaurantEntity;
 import com.hugo.review.repository.MenuRepository;
@@ -86,4 +88,39 @@ public class RestaurantService {
 
     }
 
+    public List<RestaurantView> getAllRestaurants() {
+        List<RestaurantEntity> restaurants = restaurantRepository.findAll();
+
+        return restaurants.stream().map((restaurant) -> RestaurantView.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .address(restaurant.getAddress())
+                .createdAt(restaurant.getCreatedAt())
+                .updatedAt(restaurant.getUpdatedAt())
+                .build()
+        ).toList();
+    }
+
+    public RestaurantDetailView getRestaurantDetail(Long restaurantId) {
+        RestaurantEntity restaurant = restaurantRepository.findById(restaurantId).orElseThrow();
+        List<MenuEntity> menus = menuRepository.findAllByRestaurantId(restaurantId);
+
+        return RestaurantDetailView.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .address(restaurant.getAddress())
+                .createdAt(restaurant.getCreatedAt())
+                .updatedAt(restaurant.getUpdatedAt())
+                .menus(
+                        menus.stream().map((menu) -> RestaurantDetailView.Menu.builder()
+                                .id(menu.getId())
+                                .name(menu.getName())
+                                .price(menu.getPrice())
+                                .createdAt(menu.getCreatedAt())
+                                .updatedAt(menu.getUpdatedAt())
+                                .build()
+                        ).toList()
+                )
+                .build();
+    }
 }
